@@ -65,7 +65,8 @@ int main(int argc , char *argv[])
     //========================
 	// Receive data / send ack
 	//========================
-    while(1) {
+    int cnt = 1;
+    while(cnt--) {
         //=================================================================
         // Todo: 1. receive data and send ACKs with correct sequence number
         //       2. simulate packet loss (or you can implement in server.c)

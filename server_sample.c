@@ -65,7 +65,7 @@ void print_state(int x) {
 }
 
 
-void sender(){
+void sender() {
     //===========================================
     // Write your send here
     // Todo: 1. send cwnd sequences of data that
@@ -77,7 +77,7 @@ void sender(){
 
     exp_seqnum = seq_num + cwnd;
     while (seq_num < exp_seqnum) {  // send a sequence of segments
-        sprintf(send_buf, "%d", seq_num);
+        sprintf(send_buf, "%d,%d", seq_num, cwnd);
         if (send(ns, send_buf, strlen(send_buf), 0) < 0) {
             printf("server send failed\n");
             exit(6);
@@ -87,8 +87,7 @@ void sender(){
     }
 }
 
-void receiver()
-{
+void receiver() {
     //====================================================
     // Write your recv here
     // Todo: 1. receive ACKs from client
@@ -217,7 +216,7 @@ int main(int argc, char *argv[])
     print_state(internet_state);
     
     while (ROUND--) {
-        // sender();
+        sender();
         // receiver();
     }
 
