@@ -65,7 +65,7 @@ int main(int argc , char *argv[])
     //========================
 	// Receive data / send ack
 	//========================
-    int cnt = 1;
+    int cnt = 50;
     while(cnt--) {
         //=================================================================
         // Todo: 1. receive data and send ACKs with correct sequence number
