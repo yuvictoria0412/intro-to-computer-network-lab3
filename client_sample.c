@@ -92,8 +92,12 @@ int main(int argc , char *argv[])
                 rev_buf[i] = '\0';
             }
         }
+
+        printf("received: seq_num = [%s]\n", rev_buf);
+        printf("cwnd = %s\n", temp);
         seq_num = atoi(rev_buf);
-        cwnd = atoi(rev_buf);
+        cwnd = atoi(temp);
+
         printf("received: seq_num = [%d]\n", seq_num);
         printf("cwnd = %d\n", cwnd);
     }
