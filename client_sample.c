@@ -81,8 +81,8 @@ int main(int argc , char *argv[])
             printf("received failed\n");
             exit(5);
         }
-
-        for (int i = 0, j = 0; rev_buf[i] != '\0'; i++) {
+        printf("received: %s\n", rev_buf);
+        for (int i = 0, j = 0; i < 50; i++) {
             if (rev_buf[i] == ',') {
                 flag = 1;
                 rev_buf[i] = '\0';
@@ -92,7 +92,7 @@ int main(int argc , char *argv[])
                 rev_buf[i] = '\0';
             }
         }
-
+        temp[49] = '\0';
         printf("received: seq_num = [%s]\n", rev_buf);
         printf("cwnd = %s\n", temp);
         seq_num = atoi(rev_buf);
