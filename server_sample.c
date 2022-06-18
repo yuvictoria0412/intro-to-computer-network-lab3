@@ -50,7 +50,8 @@ int cwnd = 1;
 int ssthresh = 8;
 int internet_state = SLOW_START;
 int exp_seqnum;
-
+char rev_buf[50];
+char send_buf[50];
 
 void print_state(int x) {
     switch (x) {
@@ -72,12 +73,11 @@ void sender(){
     // Required format: 
     //       send: seq_num = [sequence number]
     //===========================================
-    char send_buf[50];
     static int seq_num = 1;
 
     exp_seqnum = seq_num + cwnd;
     while (seq_num < exp_seqnum) {  // send a sequence of segments
-        sprintf(send_buf, "%d\0", seq_num);
+        sprintf(send_buf, "%d", seq_num);
         if (send(ns, send_buf, strlen(send_buf), 0) < 0) {
             printf("server send failed\n");
             exit(6);
@@ -103,7 +103,6 @@ void receiver()
     static int previous_ack;
     static int same_ack = 1;
     int current_ack;
-    char rev_buf[50];
     int receive_time = cwnd;
 
     while (receive_time--) {
@@ -128,7 +127,7 @@ void receiver()
                 printf("cwnd = [%d], ssthresh = [%d]\n", cwnd, ssthresh);
 
                 // resend duplicate acks
-                sprintf(send_buf, "%d\0", previous_ack);
+                sprintf(send_buf, "%d", previous_ack);
                 if (send(s, send_buf, strlen(send_buf), 0) < 0) {
                     printf("server resend duplicated segment failed\n");
                     exit(6);
@@ -177,7 +176,7 @@ int main(int argc, char *argv[])
     
 
     if (argc != 2) {
-        printf(stderr, "argument error\n");
+        printf("argument error\n");
         exit(1);
     }
 

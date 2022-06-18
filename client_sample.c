@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -56,7 +57,7 @@ int main(int argc , char *argv[])
     }
 
     if (connect(s, (struct sockaddr *)&server, sizeof(server)) < 0) {
-        tcperror("Connect()");
+        printf("socket connect failed\n");
         exit(4);
     }
 
