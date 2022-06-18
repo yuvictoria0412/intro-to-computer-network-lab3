@@ -34,6 +34,7 @@ int main(int argc , char *argv[])
     unsigned short port;
     char send_buf[50];
     char rev_buf[50];
+    int seq_num, cwnd;
 
     if (argc != 3) {
         printf("too few arguments!\n");
@@ -64,7 +65,7 @@ int main(int argc , char *argv[])
     //========================
 	// Receive data / send ack
 	//========================
-    while(1){
+    while(1) {
         //=================================================================
         // Todo: 1. receive data and send ACKs with correct sequence number
         //       2. simulate packet loss (or you can implement in server.c)
@@ -72,12 +73,31 @@ int main(int argc , char *argv[])
         //       received: seq_num = [sequence number]
         //       loss: seq_num = [seq_num]
         //=================================================================
+        char temp[50];
+        bool flag = 0;
 
-        // if (recv(s, buf, sizeof(buf), 0) < 0) {
-        //     tcperror("Recv()");
-        //     exit(5);
-        // }
+        if (recv(s, rev_buf, sizeof(rev_buf), 0) < 0) {
+            printf("received failed\n");
+            exit(5);
+        }
+
+        for (int i = 0, j = 0; rev_buf[i] != '\0'; i++) {
+            if (rev_buf[i] == ',') {
+                flag = 1;
+                rev_buf[i] = '\0';
+            }
+            if (flag) {
+                temp[j++] = rev_buf[i];
+                rev_buf[i] = '\0';
+            }
+        }
+        seq_num = atoi(rev_buf);
+        cwnd = atoi(rev_buf);
+        printf("received: seq_num = [%d]\n", seq_num);
+        printf("cwnd = %d\n", cwnd);
     }
+
     close(s);
+    printf("client ended successfully :-D");
     return 0;
 }
