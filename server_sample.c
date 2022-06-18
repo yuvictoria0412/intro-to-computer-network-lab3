@@ -78,7 +78,7 @@ void sender() {
     exp_seqnum = seq_num + cwnd;
     while (seq_num < exp_seqnum) {  // send a sequence of segments
         sprintf(send_buf, "%d,%d", seq_num, cwnd);
-        if (send(ns, send_buf, strlen(send_buf), 0) < 0) {
+        if (send(ns, send_buf, 50, 0) < 0) {
             printf("server send failed\n");
             exit(6);
         }
@@ -127,7 +127,7 @@ void receiver() {
 
                 // resend duplicate acks
                 sprintf(send_buf, "%d", previous_ack);
-                if (send(s, send_buf, strlen(send_buf), 0) < 0) {
+                if (send(s, send_buf, 50, 0) < 0) {
                     printf("server resend duplicated segment failed\n");
                     exit(6);
                 }
