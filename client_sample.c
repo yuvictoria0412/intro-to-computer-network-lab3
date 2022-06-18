@@ -35,6 +35,7 @@ int main(int argc , char *argv[])
     char send_buf[50];
     char rev_buf[50];
     int seq_num, cwnd;
+    // int last_cwnd;
 
     if (argc != 3) {
         printf("too few arguments!\n");
@@ -43,7 +44,7 @@ int main(int argc , char *argv[])
 
     hostnm = gethostbyname(argv[1]);
     if (hostnm == (struct hostent *) 0) {
-        fprintf(stderr, "Gethostbyname failed\n");
+        printf("Gethostbyname failed\n");
         exit(2);
     }
 
@@ -81,7 +82,7 @@ int main(int argc , char *argv[])
             printf("received failed\n");
             exit(5);
         }
-        printf("received: %s\n", rev_buf);
+
         for (int i = 0, j = 0; i < 50; i++) {
             if (flag) {
                 temp[j++] = rev_buf[i];
@@ -93,13 +94,17 @@ int main(int argc , char *argv[])
             }
         }
         temp[49] = '\0';
-        printf("received: seq_num = [%s]\n", rev_buf);
-        printf("cwnd = %s\n", temp);
         seq_num = atoi(rev_buf);
         cwnd = atoi(temp);
-
         printf("received: seq_num = [%d]\n", seq_num);
-        printf("cwnd = %d\n", cwnd);
+        
+        // send ACK back to server
+        sprintf(send_buf, "%d", seq_num);
+        if (send(s, send_buf, 50, 0) < 0) {
+            printf("client send failed\n");
+            exit(6);
+        }
+        printf("client send ACK = %d\n", seq_num);
     }
 
     close(s);
