@@ -83,12 +83,12 @@ int main(int argc , char *argv[])
         }
         printf("received: %s\n", rev_buf);
         for (int i = 0, j = 0; i < 50; i++) {
-            if (rev_buf[i] == ',') {
-                flag = 1;
-                rev_buf[i] = '\0';
-            }
             if (flag) {
                 temp[j++] = rev_buf[i];
+                rev_buf[i] = '\0';
+            }
+            if (rev_buf[i] == ',') {
+                flag = 1;
                 rev_buf[i] = '\0';
             }
         }
