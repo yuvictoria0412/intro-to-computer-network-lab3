@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
     
     while (ROUND--) {
         sender();
-        // receiver();
+        receiver();
     }
 
     close(ns);
