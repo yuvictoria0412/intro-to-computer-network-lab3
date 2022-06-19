@@ -177,6 +177,7 @@ int main(int argc , char *argv[])
         }
         else {
             printf("loss: seq_num = [%d]", seq_num);
+            dequeue();
             enqueue(seq_num);
         }
     }
