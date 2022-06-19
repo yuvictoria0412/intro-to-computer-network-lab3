@@ -163,7 +163,9 @@ void receiver() {
                 break;
         }
     // }
-    if (re) printf("send: seg_num = [%d]\n", previous_ack);
+    if (re && receive_time) {
+        printf("send: seg_num = [%d]\n", previous_ack);
+    }
     print_state(internet_state);
 }
 
@@ -222,6 +224,6 @@ int main(int argc, char *argv[])
 
     close(ns);
     close(s);
-    printf("server ended successfully :-D");
+    printf("server ended successfully :-D\n");
     return 0;
 }
