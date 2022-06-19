@@ -80,7 +80,8 @@ int main(int argc , char *argv[])
     bool flag = 0;
     bool loss = 0;
     time_t t;
-    // int last_cwnd;
+
+    srand((unsigned) time(&t));
     queue = (int*)malloc(100 * sizeof(int));
     if (argc != 3) {
         printf("too few arguments!\n");
@@ -152,7 +153,7 @@ int main(int argc , char *argv[])
         }
 
         // simulate packet loss
-        if (srand(time(&t)) % 20 == 1)
+        if (rand() % 20 == 1)
             loss = 1;
 
         if (!loss) {
