@@ -107,8 +107,8 @@ int main(int argc , char *argv[])
     int seq_num, cwnd;
     int old_cwnd = 0;
     queue a, b;
-    a = {.size = 100, .front = -1, .rear = -1};
-    b = {.size = 100, .front = -1, .rear = -1};
+    a = {100, -1, -1};
+    b = {100, -1, -1};
     queue* seq_queue = &a;
     queue* ack_queue = &b;
     // a.size = 100;
