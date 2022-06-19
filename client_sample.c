@@ -183,20 +183,22 @@ int main(int argc , char *argv[])
         seq_num = atoi(rev_buf);
         cwnd = atoi(temp);
 
+        
+
+        // simulate packet loss
+        if (rand() % 20 == 1 && seq_num != ack_queue->arr[ack_queue->front])    // avoid same packet loss
+            loss = 1;
+
         // cwnd
         if (old_cwnd != cwnd) {
             // printf("old cwnd = %d, cwnd = %d", old_cwnd, cwnd);
             old_cwnd = cwnd;
-
+            loss = 0;
             for (int i = 0; i < cwnd; i++) {
                 enqueue(seq_num + i, seq_queue);
             }
             
         }
-
-        // simulate packet loss
-        if (rand() % 30 == 1 && seq_num != ack_queue->arr[ack_queue->front])    // avoid same packet loss
-            loss = 1;
 
         if (!loss) {
             // packet successfully received
@@ -243,7 +245,7 @@ int main(int argc , char *argv[])
         else {
             if (queue_empty(ack_queue)) {
                 printf("loss: seq_num = [%d]\n", seq_num);
-                sprintf(send_buf, "%d", -1);
+                sprintf(send_buf, "%d", seq_num);
                 if (send(s, send_buf, 50, 0) < 0) {
                     printf("client send failed\n");
                     exit(6);
