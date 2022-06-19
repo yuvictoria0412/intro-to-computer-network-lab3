@@ -63,6 +63,29 @@ void dequeue() {
         front++;
 }
 
+void displayQueue()
+{
+    if (front == -1)
+    {
+        printf("\nQueue is Empty");
+        return;
+    }
+    printf("\nElements in Circular Queue are: ");
+    if (rear >= front)
+    {
+        for (int i = front; i <= rear; i++)
+            printf("%d ",arr[i]);
+    }
+    else
+    {
+        for (int i = front; i < size; i++)
+            printf("%d ", arr[i]);
+ 
+        for (int i = 0; i <= rear; i++)
+            printf("%d ", arr[i]);
+    }
+}
+
 int main(int argc , char *argv[])
 {
     //===========================================
@@ -170,6 +193,7 @@ int main(int argc , char *argv[])
             printf("client send ACK = %d\n", queue[front]);
             if (queue[front] != seq_num) {
                 printf("receive order error\n");
+                displayQueue();
                 exit(100);
             }
             // remove seq # from queue
