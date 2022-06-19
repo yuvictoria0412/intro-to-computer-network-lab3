@@ -111,12 +111,13 @@ void receiver() {
             exit(7);
         }
         current_ack = atoi(rev_buf);
-        if (current_ack != -1)
+        if (current_ack > 0)
             printf("ACK get: [%d]\n", current_ack);
+        else printf("loss ACK get: [%d]\n", -1*current_ack);
 
         if (current_ack == previous_ack && current_ack != resent_ack) {
             same_ack++;
-            if (same_ack == 4) {    // 3-duplicate ack happens
+            if (same_ack == 3) {    // 3-duplicate ack happens
                 // update ssthresh and cwnd
                 ssthresh = 0.5 * cwnd;
                 if (!ssthresh) ssthresh = 1;
