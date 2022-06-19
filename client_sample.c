@@ -71,7 +71,7 @@ void dequeue(queue *q) {
 
 void displayQueue(queue *q) {
     if (q->front == -1) {
-        printf("Queue is Empty\n");
+        printf("Queue is Empty");
         return;
     }
     printf("Elements in Circular Queue are: ");
@@ -208,13 +208,17 @@ int main(int argc , char *argv[])
                 sprintf(send_buf, "%d", seq_num);
                 printf("client send ACK = seq_num %d\n", seq_num);
             }
-            else {  // loss happened
+            else {  // loss happened before send duplicate ack
                 if (seq_num == ack_queue->arr[ack_queue->front]) {
                     dequeue(ack_queue);
-                    if (queue_empty(ack_queue))
+                    if (queue_empty(ack_queue)) {
+                        printf("client send ACK = seq_num %d\n", seq_queue->arr[seq_queue->front]);
+                        sprintf(send_buf, "%d", seq_queue->arr[seq_queue->front]);
+                    }
+                    else {
                         printf("client send ACK = seq_num %d\n", ack_queue->arr[ack_queue->front]);
-                    else 
-                        printf("client send ACK = seq_num %d\n", seq_num);
+                        sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
+                    }
                 }
                 else {
                     sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
@@ -248,7 +252,7 @@ int main(int argc , char *argv[])
             }
             else {
                 sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
-                printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+                // printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
                 
             }
             enqueue(seq_num, ack_queue);
