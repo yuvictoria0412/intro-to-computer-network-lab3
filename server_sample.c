@@ -128,7 +128,7 @@ void receiver() {
 
                 // resend duplicate acks
                 sprintf(send_buf, "%d", previous_ack);
-                if (send(s, send_buf, 50, 0) < 0) {
+                if (send(ns, send_buf, 50, 0) < 0) {
                     printf("server resend duplicated segment failed\n");
                     exit(6);
                 }
