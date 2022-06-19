@@ -145,7 +145,6 @@ void receiver() {
             same_ack = 1;
             previous_ack = current_ack;
         }
-        if (re) printf("send: seg_num = [%d]\n", previous_ack);
     }
     
     // if (current_ack == exp_seqnum) {
@@ -164,7 +163,7 @@ void receiver() {
                 break;
         }
     // }
-
+    if (re) printf("send: seg_num = [%d]\n", previous_ack);
     print_state(internet_state);
 }
 
