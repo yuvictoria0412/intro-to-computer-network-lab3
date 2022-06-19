@@ -71,10 +71,10 @@ void dequeue(queue *q) {
 
 void displayQueue(queue *q) {
     if (q->front == -1) {
-        printf("\nQueue is Empty");
+        printf("Queue is Empty\n");
         return;
     }
-    printf("\nElements in Circular Queue are: ");
+    printf("Elements in Circular Queue are: ");
     if (q->rear >= q->front) {
         for (int i = q->front; i <= q->rear; i++)
             printf("%d ",q->arr[i]);
@@ -185,7 +185,7 @@ int main(int argc , char *argv[])
 
         // cwnd
         if (old_cwnd != cwnd) {
-            printf("old cwnd = %d, cwnd = %d", old_cwnd, cwnd);
+            // printf("old cwnd = %d, cwnd = %d", old_cwnd, cwnd);
             old_cwnd = cwnd;
 
             for (int i = 0; i < cwnd; i++) {
@@ -237,17 +237,25 @@ int main(int argc , char *argv[])
             displayQueue(seq_queue);
         }
         else {
-            printf("loss: seq_num = [%d]\n", -1);
-            sprintf(send_buf, "%d", seq_num);
-            if (send(s, send_buf, 50, 0) < 0) {
-                printf("client send failed\n");
-                exit(6);
+            if (queue_empty(ack_queue)) {
+                printf("loss: seq_num = [%d]\n", seq_num);
+                sprintf(send_buf, "%d", -1);
+                if (send(s, send_buf, 50, 0) < 0) {
+                    printf("client send failed\n");
+                    exit(6);
+                }
+                // exp_seq = seq_num;
             }
-            // exp_seq = seq_num;
+            else {
+                sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
+                printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+                
+            }
             enqueue(seq_num, ack_queue);
             dequeue(seq_queue);
             enqueue(seq_num, seq_queue);
         }
+        printf("\n");
     }
 
     close(s);
