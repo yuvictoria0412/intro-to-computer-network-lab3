@@ -48,10 +48,10 @@ void enqueue(int val) {
 void dequeue() {
     if (front == -1) {
         printf("Queue is Empty\n");
-        error(5);
+        exit(5);
     }
 
-    arr[front] = -1;
+    queue[front] = -1;
 
     if (front == rear) {
         front = -1;
@@ -152,7 +152,7 @@ int main(int argc , char *argv[])
         }
 
         // simulate packet loss
-        if (srand((unsigned) time(&t)) % 20 == 1)
+        if (srand(time(&t)) % 20 == 1)
             loss = 1;
 
         if (!loss) {
