@@ -98,7 +98,7 @@ int main(int argc , char *argv[])
     char send_buf[50];
     char rev_buf[50];
     int seq_num, cwnd;
-    int old_cwnd;
+    int old_cwnd = 0;
     
     bool flag = 0;
     bool loss = 0;
@@ -170,7 +170,9 @@ int main(int argc , char *argv[])
 
         // cwnd
         if (old_cwnd != cwnd) {
+            printf("old cwnd = %d, cwnd = %d", old_cwnd, cwnd);
             old_cwnd = cwnd;
+
             for (int i = 0; i < cwnd; i++) {
                 enqueue(seq_num + i);
             }
