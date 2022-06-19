@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <netdb.h>
@@ -22,6 +23,42 @@ typedef struct ack_pkt{
     int seq_num;
 }ack_pkt;
 
+void enqueue(int val, int& front, int& rearm, int size, int* queue) {
+    if ((front == 0 && rear == size-1) || (rear == (front-1) % (size-1))) {
+        printf("Queue is Full\n");
+        exit(4);
+    }
+    else if (front == -1) {
+        front = rear = 0;
+        queue[rear] = val;
+    }
+    else if (rear == size-1 && front != 0) {
+        rear = 0;
+        queue[rear] = val;
+    }
+    else {
+        rear++;
+        queue[rear] = val;
+    }
+}
+
+void dequeue(int& front, int &rear, int size, int* queue) {
+    if (front == -1) {
+        printf("Queue is Empty\n");
+        error(5);
+    }
+
+    arr[front] = -1;
+
+    if (front == rear) {
+        front = -1;
+        rear = -1;
+    }
+    else if (front == size-1)
+        front = 0;
+    else
+        front++;
+}
 
 int main(int argc , char *argv[])
 {
@@ -35,8 +72,14 @@ int main(int argc , char *argv[])
     char send_buf[50];
     char rev_buf[50];
     int seq_num, cwnd;
+    int old_cwnd;
+    int *queue;
+    int size = 100, front = -1, rear = -1;
+    bool flag = 0;
+    bool loss = 0;
+    time_t t;
     // int last_cwnd;
-
+    queue = (int*)malloc(100 * sizeof(int));
     if (argc != 3) {
         printf("too few arguments!\n");
         exit(1);
@@ -76,13 +119,15 @@ int main(int argc , char *argv[])
         //       loss: seq_num = [seq_num]
         //=================================================================
         char temp[50];
-        bool flag = 0;
+        flag = 0;
+        loss = 0;
 
         if (recv(s, rev_buf, sizeof(rev_buf), 0) < 0) {
             printf("received failed\n");
             exit(5);
         }
 
+        // translate receive segment
         for (int i = 0, j = 0; i < 50; i++) {
             if (flag) {
                 temp[j++] = rev_buf[i];
@@ -96,15 +141,41 @@ int main(int argc , char *argv[])
         temp[49] = '\0';
         seq_num = atoi(rev_buf);
         cwnd = atoi(temp);
-        printf("received: seq_num = [%d]\n", seq_num);
-        
-        // send ACK back to server
-        sprintf(send_buf, "%d", seq_num);
-        if (send(s, send_buf, 50, 0) < 0) {
-            printf("client send failed\n");
-            exit(6);
+
+        // cwnd
+        if (old_cwnd != cwnd) {
+            for (int i = 0; i < cwnd; i++) {
+                enqueue(seq_num + i, front, rear, size, queue);
+            }
         }
-        printf("client send ACK = %d\n", seq_num);
+
+        // simulate packet loss
+        if (srand((unsigned) time(&t)) % 20 == 1)
+            loss = 1;
+
+        if (!loss) {
+            // packet successfully received
+            printf("received: seq_num = [%d]\n", seq_num);
+            
+            // send ACK back to server
+            sprintf(send_buf, "%d", seq_num);
+            if (send(s, send_buf, 50, 0) < 0) {
+                printf("client send failed\n");
+                exit(6);
+            }
+            // printf("client send ACK = %d\n", seq_num);
+            printf("client send ACK = %d\n", queue[front]);
+            if (queue[front] != seq_num) {
+                printf("receive order error\n");
+                exit(100);
+            }
+            // remove seq # from queue
+            dequeue(front, rear, size, queue);
+        }
+        else {
+            printf("loss: seq_num = [%d]", seq_num);
+            enqueue(seq_num, front, rear, size, queue);
+        }
     }
 
     close(s);
