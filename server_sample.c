@@ -163,7 +163,7 @@ void receiver() {
                 break;
         }
     // }
-    if (re && receive_time) {
+    if (re && receive_time == 2) {
         printf("send: seg_num = [%d]\n", previous_ack);
     }
     print_state(internet_state);
