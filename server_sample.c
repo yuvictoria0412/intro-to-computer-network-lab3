@@ -127,7 +127,14 @@ void receiver() {
                 printf("3-duplicate ACKs: seq_num = [%d]\n", previous_ack);
                 printf("cwnd = [%d], ssthresh = [%d]\n", cwnd, ssthresh);
 
-                
+                // resend duplicate acks
+                sprintf(send_buf, "%d", previous_ack);
+                resent_ack = previous_ack;
+                if (send(ns, send_buf, 50, 0) < 0) {
+                    printf("server resend duplicated segment failed\n");
+                    exit(6);
+                }
+                printf("send: seg_num = [%d]\n", previous_ack);
 
                 // update state
                 internet_state = SLOW_START;
@@ -139,29 +146,22 @@ void receiver() {
         }
     }
     
+    // if (current_ack == exp_seqnum) {
+        // update cwnd
+        if (cwnd >= ssthresh) {
+            internet_state = CONGESTION_AVOID;
+        }
 
-    // resend duplicate acks
-    sprintf(send_buf, "%d", previous_ack);
-    resent_ack = previous_ack;
-    if (send(ns, send_buf, 50, 0) < 0) {
-        printf("server resend duplicated segment failed\n");
-        exit(6);
-    }
-    printf("send: seg_num = [%d]\n", previous_ack);
-
-    if (cwnd >= ssthresh) {
-        internet_state = CONGESTION_AVOID;
-    }
-
-    switch(internet_state) {
-        case SLOW_START:
-            cwnd += cwnd;
-            break;
-        
-        case CONGESTION_AVOID:
-            cwnd++;
-            break;
-    }
+        switch(internet_state) {
+            case SLOW_START:
+                cwnd += cwnd;
+                break;
+            
+            case CONGESTION_AVOID:
+                cwnd++;
+                break;
+        }
+    // }
 
     print_state(internet_state);
 }
