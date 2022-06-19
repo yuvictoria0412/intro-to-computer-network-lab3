@@ -23,7 +23,10 @@ typedef struct ack_pkt{
     int seq_num;
 }ack_pkt;
 
-void enqueue(int val, int& front, int& rearm, int size, int* queue) {
+int *queue;
+int size = 100, front = -1, rear = -1;
+
+void enqueue(int val) {
     if ((front == 0 && rear == size-1) || (rear == (front-1) % (size-1))) {
         printf("Queue is Full\n");
         exit(4);
@@ -42,7 +45,7 @@ void enqueue(int val, int& front, int& rearm, int size, int* queue) {
     }
 }
 
-void dequeue(int& front, int &rear, int size, int* queue) {
+void dequeue() {
     if (front == -1) {
         printf("Queue is Empty\n");
         error(5);
@@ -73,8 +76,7 @@ int main(int argc , char *argv[])
     char rev_buf[50];
     int seq_num, cwnd;
     int old_cwnd;
-    int *queue;
-    int size = 100, front = -1, rear = -1;
+    
     bool flag = 0;
     bool loss = 0;
     time_t t;
@@ -145,7 +147,7 @@ int main(int argc , char *argv[])
         // cwnd
         if (old_cwnd != cwnd) {
             for (int i = 0; i < cwnd; i++) {
-                enqueue(seq_num + i, front, rear, size, queue);
+                enqueue(seq_num + i);
             }
         }
 
@@ -170,11 +172,11 @@ int main(int argc , char *argv[])
                 exit(100);
             }
             // remove seq # from queue
-            dequeue(front, rear, size, queue);
+            dequeue();
         }
         else {
             printf("loss: seq_num = [%d]", seq_num);
-            enqueue(seq_num, front, rear, size, queue);
+            enqueue(seq_num);
         }
     }
 
