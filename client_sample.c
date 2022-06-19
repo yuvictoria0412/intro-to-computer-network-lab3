@@ -106,12 +106,14 @@ int main(int argc , char *argv[])
     char rev_buf[50];
     int seq_num, cwnd;
     int old_cwnd = 0;
-    queue a{.size = 100, .front = -1, .rear = -1}, b{.size = 100, .front = -1, .rear = -1};
+    queue a, b;
+    a = {.size = 100, .front = -1, .rear = -1};
+    b = {.size = 100, .front = -1, .rear = -1};
     queue* seq_queue = &a;
     queue* ack_queue = &b;
     // a.size = 100;
     // b.size = 100
-    printf(seq_queue->size);
+    printf("%d", seq_queue->size);
     
 /*
     bool flag = 0;
