@@ -135,7 +135,7 @@ void receiver() {
                     exit(6);
                 }
                 printf("send: seg_num = [%d]\n", previous_ack);
-
+                receive_time++;
                 // update state
                 internet_state = SLOW_START;
             }
