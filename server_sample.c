@@ -135,7 +135,7 @@ void receiver() {
                     printf("server resend duplicated segment failed\n");
                     exit(6);
                 }
-                re = 1;
+                printf("send: seg_num = [%d]\n", previous_ack);
                 receive_time++;
                 // update state
                 internet_state = SLOW_START;
@@ -163,9 +163,6 @@ void receiver() {
                 break;
         }
     // }
-    if (re && receive_time == 2) {
-        printf("send: seg_num = [%d]\n", previous_ack);
-    }
     print_state(internet_state);
 }
 
