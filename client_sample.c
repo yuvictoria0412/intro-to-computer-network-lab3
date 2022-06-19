@@ -24,19 +24,15 @@ typedef struct ack_pkt{
 }ack_pkt;
 
 typedef struct Q {
-    int size = 100;
+    int size;
     int front;
     int rear;
     int arr[100];
-
-
-
 }queue;
 
-queue* seq_queue;
-queue* ack_queue;
 
-void enqueue(int val, queue *q) {
+
+/*void enqueue(int val, queue *q) {
     if ((q->front == 0 && q->rear == q->size-1) || (q->rear == (q->front-1) % (q->size-1))) {
         printf("Queue is Full\n");
         exit(4);
@@ -95,7 +91,7 @@ void displayQueue(queue *q) {
 
 bool queue_empty(queue *q) {
     return q->front == -1 && q->rear == -1;
-}
+}*/
 
 int main(int argc , char *argv[])
 {
@@ -110,8 +106,14 @@ int main(int argc , char *argv[])
     char rev_buf[50];
     int seq_num, cwnd;
     int old_cwnd = 0;
+    queue a{.size = 100, .front = -1, .rear = -1}, b{.size = 100, .front = -1, .rear = -1};
+    queue* seq_queue = &a;
+    queue* ack_queue = &b;
+    // a.size = 100;
+    // b.size = 100
+    printf(seq_queue->size);
     
-
+/*
     bool flag = 0;
     bool loss = 0;
     time_t t;
@@ -248,6 +250,6 @@ int main(int argc , char *argv[])
     }
 
     close(s);
-    printf("client ended successfully :-D");
+    printf("client ended successfully :-D");*/
     return 0;
 }
