@@ -32,7 +32,7 @@ typedef struct Q {
 
 
 
-/*void enqueue(int val, queue *q) {
+void enqueue(int val, queue *q) {
     if ((q->front == 0 && q->rear == q->size-1) || (q->rear == (q->front-1) % (q->size-1))) {
         printf("Queue is Full\n");
         exit(4);
@@ -91,7 +91,7 @@ void displayQueue(queue *q) {
 
 bool queue_empty(queue *q) {
     return q->front == -1 && q->rear == -1;
-}*/
+}
 
 int main(int argc , char *argv[])
 {
@@ -114,7 +114,7 @@ int main(int argc , char *argv[])
     b.rear = a.rear = -1;
     printf("%d", seq_queue->size);
     
-/*
+
     bool flag = 0;
     bool loss = 0;
     time_t t;
@@ -251,6 +251,6 @@ int main(int argc , char *argv[])
     }
 
     close(s);
-    printf("client ended successfully :-D");*/
+    printf("client ended successfully :-D");
     return 0;
 }
