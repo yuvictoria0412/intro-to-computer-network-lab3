@@ -227,7 +227,7 @@ int main(int argc , char *argv[])
                 }
                 else {
                     sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
-                    // printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+                    printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
                 }
             }
             if (send(s, send_buf, 50, 0) < 0) {
