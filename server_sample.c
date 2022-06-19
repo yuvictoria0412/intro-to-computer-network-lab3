@@ -101,6 +101,7 @@ void receiver() {
     //====================================================
     static int previous_ack;
     static int same_ack = 1;
+    static int resent_ack = -1;
     int current_ack;
     int receive_time = cwnd;
 
@@ -112,7 +113,7 @@ void receiver() {
         current_ack = atoi(rev_buf);
         printf("ACK get: [%d]\n", current_ack);
 
-        if (current_ack == previous_ack) {
+        if (current_ack == previous_ack && current_ack != resent_ack) {
             same_ack++;
             if (same_ack == 3) {    // 3-duplicate ack happens
                 // update ssthresh and cwnd
@@ -128,6 +129,7 @@ void receiver() {
 
                 // resend duplicate acks
                 sprintf(send_buf, "%d", previous_ack);
+                resent_ack = previous_ack;
                 if (send(ns, send_buf, 50, 0) < 0) {
                     printf("server resend duplicated segment failed\n");
                     exit(6);
