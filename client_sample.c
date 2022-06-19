@@ -41,7 +41,7 @@ void enqueue(int val, queue *q) {
         q->front = q->rear = 0;
         q->arr[q->rear] = val;
     }
-    else if (q->ear == q->size-1 && q->front != 0) {
+    else if (q->rear == q->size-1 && q->front != 0) {
         q->rear = 0;
         q->arr[q->rear] = val;
     }
