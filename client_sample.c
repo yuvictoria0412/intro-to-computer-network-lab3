@@ -150,8 +150,8 @@ int main(int argc , char *argv[])
     //========================
 	// Receive data / send ack
 	//========================
-    int cnt = 50;
-    while(cnt--) {
+    // int cnt = 50;
+    while(1) {
         //=================================================================
         // Todo: 1. receive data and send ACKs with correct sequence number
         //       2. simulate packet loss (or you can implement in server.c)
@@ -186,7 +186,7 @@ int main(int argc , char *argv[])
         printf("received: seq_num = [%d]\n", seq_num);
 
         // simulate packet loss
-        if (rand() % 20 == 1 && seq_num != ack_queue->arr[ack_queue->front]) {    // avoid same packet loss 
+        if (rand() % 15 == 1 && seq_num != ack_queue->arr[ack_queue->front]) {    // avoid same packet loss 
             if (seq_queue->arr[seq_queue->rear] - seq_num > 4) // enough to send 3 duplicate ack
                 loss = 1;
         }
