@@ -107,12 +107,11 @@ int main(int argc , char *argv[])
     int seq_num, cwnd;
     int old_cwnd = 0;
     queue a, b;
-    a = {100, -1, -1};
-    b = {100, -1, -1};
     queue* seq_queue = &a;
     queue* ack_queue = &b;
-    // a.size = 100;
-    // b.size = 100
+    a.size = b.size = 100;
+    b.front = a.front = -1;
+    b.rear = a.rear = -1;
     printf("%d", seq_queue->size);
     
 /*
