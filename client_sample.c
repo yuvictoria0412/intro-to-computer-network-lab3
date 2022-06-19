@@ -198,8 +198,8 @@ int main(int argc , char *argv[])
                 enqueue(seq_num + i, seq_queue);
             }
         }
-        if (seq_num == 42) loss = 1;
-        else loss = 0;
+        // if (seq_num == 42) loss = 1;
+        // else loss = 0;
 
         if (!loss) {
             // packet successfully received
@@ -212,7 +212,7 @@ int main(int argc , char *argv[])
                 printf("client send ACK = seq_num %d\n", seq_num);
             }
             else {  // loss happened before send duplicate ack
-                if (seq_num == ack_queue->arr[ack_queue->front]) {
+                if (seq_num == ack_queue->arr[ack_queue->front]) {  // receive lossed packet again
                     dequeue(ack_queue);
                     if (queue_empty(ack_queue)) {
                         printf("client send ACK = seq_num %d\n", seq_queue->arr[seq_queue->front]);
