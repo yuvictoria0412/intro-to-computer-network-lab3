@@ -183,7 +183,7 @@ int main(int argc , char *argv[])
         seq_num = atoi(rev_buf);
         cwnd = atoi(temp);
 
-        
+        printf("received: seq_num = [%d]\n", seq_num);
 
         // simulate packet loss
         if (rand() % 20 == 1 && seq_num != ack_queue->arr[ack_queue->front])    // avoid same packet loss
@@ -203,7 +203,7 @@ int main(int argc , char *argv[])
 
         if (!loss) {
             // packet successfully received
-            printf("received: seq_num = [%d]\n", seq_num);
+            // printf("received: seq_num = [%d]\n", seq_num);
 
             // send ACK back to server
             displayQueue(ack_queue);
@@ -234,7 +234,7 @@ int main(int argc , char *argv[])
             }
 
             // receive
-            if (seq_queue->arr[seq_queue->front] != seq_num) {
+            if (!queue_empty(ack_queue) && seq_queue->arr[seq_queue->front] != seq_num) {
                 printf("receive order error\n");
                 displayQueue(seq_queue);
                 exit(100);
@@ -243,11 +243,13 @@ int main(int argc , char *argv[])
             dequeue(seq_queue);
             displayQueue(seq_queue);
         }
+
+        // loss
         else {
             if (queue_empty(ack_queue)) {
                 printf("loss: seq_num = [%d]\n", seq_num);
                 sprintf(send_buf, "%d", seq_num);
-                // exp_seq = seq_num;
+                printf("client send ACK = seq_num %d\n", seq_num);
             }
             else {
                 sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);

@@ -110,11 +110,7 @@ void receiver() {
             exit(7);
         }
         current_ack = atoi(rev_buf);
-        if (current_ack == -1) {
-            printf("LOSS ACK get: [%d]\n", current_ack);
-            continue;
-        }
-        else printf("ACK get: [%d]\n", current_ack);
+        printf("ACK get: [%d]\n", current_ack);
 
         if (current_ack == previous_ack) {
             same_ack++;
