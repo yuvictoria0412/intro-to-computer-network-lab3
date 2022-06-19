@@ -197,8 +197,9 @@ int main(int argc , char *argv[])
             for (int i = 0; i < cwnd; i++) {
                 enqueue(seq_num + i, seq_queue);
             }
-            
         }
+        if (seq_num == 42) loss = 1;
+        else loss = 0;
 
         if (!loss) {
             // packet successfully received
@@ -246,16 +247,16 @@ int main(int argc , char *argv[])
             if (queue_empty(ack_queue)) {
                 printf("loss: seq_num = [%d]\n", seq_num);
                 sprintf(send_buf, "%d", seq_num);
-                if (send(s, send_buf, 50, 0) < 0) {
-                    printf("client send failed\n");
-                    exit(6);
-                }
                 // exp_seq = seq_num;
             }
             else {
                 sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
                 // printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
-                
+                printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+            }
+            if (send(s, send_buf, 50, 0) < 0) {
+                printf("client send failed\n");
+                exit(6);
             }
             enqueue(seq_num, ack_queue);
             dequeue(seq_queue);
