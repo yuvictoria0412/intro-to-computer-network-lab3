@@ -104,6 +104,7 @@ void receiver() {
     static int resent_ack = -1;
     int current_ack;
     int receive_time = cwnd;
+    int re = 0;
 
     while (receive_time--) {
         if (recv(ns, rev_buf, 50, 0) < 0) {
@@ -123,9 +124,7 @@ void receiver() {
                 if (!ssthresh) ssthresh = 1;
                 cwnd = 1;
                 same_ack = 0;
-                //
-                // exp_seqnum = seq_num + cwnd;
-                //
+
                 printf("3-duplicate ACKs: seq_num = [%d]\n", previous_ack);
                 printf("cwnd = [%d], ssthresh = [%d]\n", cwnd, ssthresh);
 
@@ -136,7 +135,7 @@ void receiver() {
                     printf("server resend duplicated segment failed\n");
                     exit(6);
                 }
-                printf("send: seg_num = [%d]\n", previous_ack);
+                re = 1;
                 receive_time++;
                 // update state
                 internet_state = SLOW_START;
@@ -146,6 +145,7 @@ void receiver() {
             same_ack = 1;
             previous_ack = current_ack;
         }
+        if (re) printf("send: seg_num = [%d]\n", previous_ack);
     }
     
     // if (current_ack == exp_seqnum) {
