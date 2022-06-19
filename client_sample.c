@@ -211,17 +211,17 @@ int main(int argc , char *argv[])
             // displayQueue(ack_queue);
             if (queue_empty(ack_queue)) {   // no loss happened before
                 sprintf(send_buf, "%d", seq_num);
-                printf("client send ACK = seq_num %d\n", seq_num);
+                printf("client send ACK = %d\n", seq_num);
             }
             else {  // loss happened before send duplicate ack
                 if (seq_num == ack_queue->arr[ack_queue->front]) {  // receive lossed packet again
                     dequeue(ack_queue);
                     if (queue_empty(ack_queue)) {
-                        printf("client send ACK = seq_num %d\n", seq_queue->arr[seq_queue->front]);
+                        printf("client send ACK = %d\n", seq_queue->arr[seq_queue->front]);
                         sprintf(send_buf, "%d", seq_queue->arr[seq_queue->front]);
                     }
                     else {
-                        printf("client send ACK = seq_num %d\n", ack_queue->arr[ack_queue->front]);
+                        printf("client send ACK = %d\n", ack_queue->arr[ack_queue->front]);
                         sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
                     }
                 }
