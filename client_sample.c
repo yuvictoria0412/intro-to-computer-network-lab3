@@ -186,8 +186,10 @@ int main(int argc , char *argv[])
         printf("received: seq_num = [%d]\n", seq_num);
 
         // simulate packet loss
-        if (rand() % 20 == 1 && seq_num != ack_queue->arr[ack_queue->front])    // avoid same packet loss
-            loss = 1;
+        if (rand() % 20 == 1 && seq_num != ack_queue->arr[ack_queue->front]) {    // avoid same packet loss 
+            if (seq_queue->arr[seq_queue->rear] - seq_num > 4) // enough to send 3 duplicate ack
+                loss = 1;
+        }
 
         // cwnd
         if (old_cwnd != cwnd) {
