@@ -170,6 +170,7 @@ int main(int argc , char *argv[])
 
         // cwnd
         if (old_cwnd != cwnd) {
+            old_cwnd = cwnd;
             for (int i = 0; i < cwnd; i++) {
                 enqueue(seq_num + i);
             }
