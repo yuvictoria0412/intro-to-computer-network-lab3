@@ -250,8 +250,8 @@ int main(int argc , char *argv[])
         else {
             if (queue_empty(ack_queue)) {
                 printf("loss: seq_num = [%d]\n", seq_num);
-                sprintf(send_buf, "%d", seq_num);
-                printf("client send ACK = seq_num %d\n", seq_num);
+                sprintf(send_buf, "%d", -1);
+                // printf("client send ACK = seq_num %d\n", seq_num);
             }
             else {
                 sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
