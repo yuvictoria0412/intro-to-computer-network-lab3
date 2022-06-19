@@ -116,7 +116,7 @@ void receiver() {
 
         if (current_ack == previous_ack && current_ack != resent_ack) {
             same_ack++;
-            if (same_ack == 3) {    // 3-duplicate ack happens
+            if (same_ack == 4) {    // 3-duplicate ack happens
                 // update ssthresh and cwnd
                 ssthresh = 0.5 * cwnd;
                 if (!ssthresh) ssthresh = 1;
