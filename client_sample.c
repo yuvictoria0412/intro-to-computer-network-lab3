@@ -79,7 +79,7 @@ void displayQueue()
     else
     {
         for (int i = front; i < size; i++)
-            printf("%d ", queuequeue[i]);
+            printf("%d ", queue[i]);
  
         for (int i = 0; i <= rear; i++)
             printf("%d ", queue[i]);
