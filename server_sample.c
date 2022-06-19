@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 
 #define LENGTH 16
-int ROUND = 50;
+int ROUND = 20;
 
 //======================================
 // Data sequence
@@ -110,6 +110,8 @@ void receiver() {
             exit(7);
         }
         current_ack = atoi(rev_buf);
+        if (current_ack == -1) continue;
+        else printf("ACK get: [%d]\n", current_ack);
 
         if (current_ack == previous_ack) {
             same_ack++;
@@ -136,14 +138,10 @@ void receiver() {
                 // update state
                 internet_state = SLOW_START;
             }
-            else {
-                printf("ACK get: [%d]\n", current_ack);
-            }
         }
         else {
             same_ack = 1;
             previous_ack = current_ack;
-            printf("ACK get: [%d]\n", current_ack);
         }
     }
     

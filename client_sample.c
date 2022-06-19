@@ -23,67 +23,78 @@ typedef struct ack_pkt{
     int seq_num;
 }ack_pkt;
 
-int *queue;
-int size = 100, front = -1, rear = -1;
+typedef struct Q {
+    int size = 100;
+    int front;
+    int rear;
+    int arr[100];
 
-void enqueue(int val) {
-    if ((front == 0 && rear == size-1) || (rear == (front-1) % (size-1))) {
+
+
+}queue;
+
+queue* seq_queue;
+queue* ack_queue;
+
+void enqueue(int val, queue *q) {
+    if ((q->front == 0 && q->rear == q->size-1) || (q->rear == (q->front-1) % (q->size-1))) {
         printf("Queue is Full\n");
         exit(4);
     }
-    else if (front == -1) {
-        front = rear = 0;
-        queue[rear] = val;
+    else if (q->front == -1) {
+        q->front = q->rear = 0;
+        q->arr[q->rear] = val;
     }
-    else if (rear == size-1 && front != 0) {
-        rear = 0;
-        queue[rear] = val;
+    else if (q->ear == q->size-1 && q->front != 0) {
+        q->rear = 0;
+        q->arr[q->rear] = val;
     }
     else {
-        rear++;
-        queue[rear] = val;
-    }
+        q->rear++;
+        q->arr[q->rear] = val;
+    }  
 }
 
-void dequeue() {
-    if (front == -1) {
+void dequeue(queue *q) {
+    if (q->front == -1) {
         printf("Queue is Empty\n");
         exit(5);
     }
 
-    queue[front] = -1;
+    q->arr[q->front] = -1;
 
-    if (front == rear) {
-        front = -1;
-        rear = -1;
+    if (q->front == q->rear) {
+        q->front = -1;
+        q->rear = -1;
     }
-    else if (front == size-1)
-        front = 0;
+    else if (q->front == q->size-1)
+        q->front = 0;
     else
-        front++;
+        q->front++;
 }
 
-void displayQueue()
-{
-    if (front == -1)
-    {
+void displayQueue(queue *q) {
+    if (q->front == -1) {
         printf("\nQueue is Empty");
         return;
     }
     printf("\nElements in Circular Queue are: ");
-    if (rear >= front)
-    {
-        for (int i = front; i <= rear; i++)
-            printf("%d ",queue[i]);
+    if (q->rear >= q->front) {
+        for (int i = q->front; i <= q->rear; i++)
+            printf("%d ",q->arr[i]);
     }
-    else
-    {
-        for (int i = front; i < size; i++)
-            printf("%d ", queue[i]);
- 
-        for (int i = 0; i <= rear; i++)
-            printf("%d ", queue[i]);
+    else {
+        for (int i = q->front; i < q->size; i++)
+            printf("%d ", q->arr[i]);
+
+        for (int i = 0; i <= q->rear; i++)
+            printf("%d ", q->arr[i]);
     }
+    printf("\n");
+}
+
+bool queue_empty(queue *q) {
+    return q->front == -1 && q->rear == -1;
 }
 
 int main(int argc , char *argv[])
@@ -100,12 +111,13 @@ int main(int argc , char *argv[])
     int seq_num, cwnd;
     int old_cwnd = 0;
     
+
     bool flag = 0;
     bool loss = 0;
     time_t t;
 
     srand((unsigned) time(&t));
-    queue = (int*)malloc(100 * sizeof(int));
+
     if (argc != 3) {
         printf("too few arguments!\n");
         exit(1);
@@ -174,40 +186,64 @@ int main(int argc , char *argv[])
             old_cwnd = cwnd;
 
             for (int i = 0; i < cwnd; i++) {
-                enqueue(seq_num + i);
+                enqueue(seq_num + i, seq_queue);
             }
             
         }
 
         // simulate packet loss
-        if (rand() % 20 == 1)
+        if (rand() % 30 == 1 && seq_num != ack_queue->arr[ack_queue->front])    // avoid same packet loss
             loss = 1;
 
         if (!loss) {
             // packet successfully received
             printf("received: seq_num = [%d]\n", seq_num);
-            
+
             // send ACK back to server
+            displayQueue(ack_queue);
+            if (queue_empty(ack_queue)) {   // no loss happened before
+                sprintf(send_buf, "%d", seq_num);
+                printf("client send ACK = seq_num %d\n", seq_num);
+            }
+            else {  // loss happened
+                if (seq_num == ack_queue->arr[ack_queue->front]) {
+                    dequeue(ack_queue);
+                    if (queue_empty(ack_queue))
+                        printf("client send ACK = seq_num %d\n", ack_queue->arr[ack_queue->front]);
+                    else 
+                        printf("client send ACK = seq_num %d\n", seq_num);
+                }
+                else {
+                    sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
+                    printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+                }
+            }
+            if (send(s, send_buf, 50, 0) < 0) {
+                printf("client send failed\n");
+                exit(6);
+            }
+
+            // receive
+            if (seq_queue->arr[seq_queue->front] != seq_num) {
+                printf("receive order error\n");
+                displayQueue(seq_queue);
+                exit(100);
+            }
+            // remove seq # from queue
+            dequeue(seq_queue);
+            displayQueue(seq_queue);
+        }
+        else {
+            printf("loss: seq_num = [%d]\n", -1);
             sprintf(send_buf, "%d", seq_num);
             if (send(s, send_buf, 50, 0) < 0) {
                 printf("client send failed\n");
                 exit(6);
             }
-            // printf("client send ACK = %d\n", seq_num);
-            printf("client send ACK = %d\n", queue[front]);
-            displayQueue();
-            if (queue[front] != seq_num) {
-                printf("receive order error\n");
-                displayQueue();
-                exit(100);
-            }
-            // remove seq # from queue
-            dequeue();
-        }
-        else {
-            printf("loss: seq_num = [%d]\n", seq_num);
-            dequeue();
-            enqueue(seq_num);
+            // exp_seq = seq_num;
+            enqueue(seq_num, ack_queue);
+            dequeue(seq_queue);
+            enqueue(seq_num, seq_queue);
         }
     }
 
