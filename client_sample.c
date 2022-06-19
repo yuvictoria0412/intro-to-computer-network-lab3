@@ -208,7 +208,7 @@ int main(int argc , char *argv[])
             // printf("received: seq_num = [%d]\n", seq_num);
 
             // send ACK back to server
-            displayQueue(ack_queue);
+            // displayQueue(ack_queue);
             if (queue_empty(ack_queue)) {   // no loss happened before
                 sprintf(send_buf, "%d", seq_num);
                 printf("client send ACK = seq_num %d\n", seq_num);
@@ -227,7 +227,7 @@ int main(int argc , char *argv[])
                 }
                 else {
                     sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
-                    printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+                    // printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
                 }
             }
             if (send(s, send_buf, 50, 0) < 0) {
@@ -238,25 +238,25 @@ int main(int argc , char *argv[])
             // receive
             if (!queue_empty(ack_queue) && seq_queue->arr[seq_queue->front] != seq_num) {
                 printf("receive order error\n");
-                displayQueue(seq_queue);
+                // displayQueue(seq_queue);
                 exit(100);
             }
             // remove seq # from queue
             dequeue(seq_queue);
-            displayQueue(seq_queue);
+            // displayQueue(seq_queue);
         }
 
         // loss
         else {
             if (queue_empty(ack_queue)) {
                 printf("loss: seq_num = [%d]\n", seq_num);
-                sprintf(send_buf, "%d", -1);
+                sprintf(send_buf, "%d", -1*seq_num);
                 // printf("client send ACK = seq_num %d\n", seq_num);
             }
             else {
                 sprintf(send_buf, "%d", ack_queue->arr[ack_queue->front]);
                 // printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
-                printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
+                // printf("client send ACK = duplicate ack %d\n", ack_queue->arr[ack_queue->front]);
             }
             if (send(s, send_buf, 50, 0) < 0) {
                 printf("client send failed\n");
