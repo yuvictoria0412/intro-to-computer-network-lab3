@@ -176,7 +176,7 @@ int main(int argc , char *argv[])
             for (int i = 0; i < cwnd; i++) {
                 enqueue(seq_num + i);
             }
-            displayQueue();
+            
         }
 
         // simulate packet loss
@@ -195,6 +195,7 @@ int main(int argc , char *argv[])
             }
             // printf("client send ACK = %d\n", seq_num);
             printf("client send ACK = %d\n", queue[front]);
+            displayQueue();
             if (queue[front] != seq_num) {
                 printf("receive order error\n");
                 displayQueue();
@@ -204,7 +205,7 @@ int main(int argc , char *argv[])
             dequeue();
         }
         else {
-            printf("loss: seq_num = [%d]", seq_num);
+            printf("loss: seq_num = [%d]\n", seq_num);
             dequeue();
             enqueue(seq_num);
         }
