@@ -173,6 +173,7 @@ int main(int argc , char *argv[])
             for (int i = 0; i < cwnd; i++) {
                 enqueue(seq_num + i);
             }
+            displayQueue();
         }
 
         // simulate packet loss
